@@ -1,13 +1,10 @@
-const logger = require("./logger");
+const { info } = require("./logger");
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: "Unknown endpoint" });
 };
 
-const errorHandler = (error, req, res, next) => {
-  logger.error("===========================================");
-  error("Error:", JSON.stringify(error.message));
-  logger.error("===========================================");
+const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
@@ -18,7 +15,16 @@ const errorHandler = (error, req, res, next) => {
   next(error);
 };
 
+const requestLogger = (request, response, next) => {
+  info('Method:', request.method)
+  info('Path:  ', request.path)
+  info('Body:  ', request.body)
+  info('---')
+  next()
+}
+
 module.exports = {
   unknownEndpoint,
   errorHandler,
+  requestLogger
 };
