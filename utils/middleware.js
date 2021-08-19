@@ -5,7 +5,6 @@ const unknownEndpoint = (req, res) => {
 };
 
 const errorHandler = (error, request, response, next) => {
-
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
   } else if (error.name === "ValidationError") {
@@ -16,15 +15,24 @@ const errorHandler = (error, request, response, next) => {
 };
 
 const requestLogger = (request, response, next) => {
-  info('Method:', request.method)
-  info('Path:  ', request.path)
-  info('Body:  ', request.body)
-  info('---')
-  next()
-}
+  info("Method:", request.method);
+  info("Path:  ", request.path);
+  info("Body:  ", request.body);
+  info("---");
+  next();
+};
+
+const tokenExtractor = (request, response, next) => {
+  const auth = request.get("authorization");
+  if (auth && auth.toLowerCase().startsWith("bearer ")) {
+    request.token = auth.substring(7);
+  }
+  next();
+};
 
 module.exports = {
   unknownEndpoint,
   errorHandler,
-  requestLogger
+  requestLogger,
+  tokenExtractor,
 };
