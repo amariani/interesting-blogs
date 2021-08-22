@@ -20,7 +20,7 @@ console.log("Initializing connection to", MONGODB_URI);
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    useUnifiedTopology: process.env.NODE_ENV !== "test",
     useFindAndModify: false,
     useCreateIndex: true,
   })
